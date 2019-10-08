@@ -9,6 +9,8 @@ loadEventListener();
 
 function loadEventListener() {
     form.addEventListener('submit', addTask);
+    taskList.addEventListener('click', removeTask);
+    clearBtn.addEventListener('click', clearTasks)
 }
 
 function addTask(e) {
@@ -20,7 +22,7 @@ function addTask(e) {
         listItem.appendChild(document.createTextNode(taskInput.value));
 
         const deleteItem = document.createElement('a');
-        deleteItem.className = 'delelte-item secondary-content';
+        deleteItem.className = 'delete-item secondary-content';
         deleteItem.innerHTML = '<i class="fa fa-remove"></i>';
 
         listItem.appendChild(deleteItem);
@@ -30,4 +32,18 @@ function addTask(e) {
         taskInput.value = '';
     }
     e.preventDefault();
+}
+
+function removeTask(e) {
+    if (e.target.parentElement.classList.contains('delete-item')) {
+        if (confirm('Are you sure?')) {
+            e.target.parentElement.parentElement.remove();
+        }
+    }
+}
+
+function clearTasks(e) {
+    while(taskList.firstChild) {
+        taskList.removeChild(taskList.firstChild);
+    }
 }
