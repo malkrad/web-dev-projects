@@ -21,37 +21,61 @@ function addTask(e) {
     } else {
         const listItem = document.createElement('li');
         listItem.className = 'collection-item';
+        const taskId = getLastId() + 1;
+        listItem.id = 'task-' + taskId;
         listItem.appendChild(document.createTextNode(taskInput.value));
 
-        const deleteItem = document.createElement('a');
-        deleteItem.className = 'delete-item secondary-content';
-        deleteItem.innerHTML = '<i class="fa fa-remove"></i>';
+        const deleteBtn = document.createElement('a');
+        deleteBtn.className = 'delete-item secondary-content';
+        deleteBtn.innerHTML = '<i class="fa fa-remove"></i>';
 
-        listItem.appendChild(deleteItem);
+        listItem.appendChild(deleteBtn);
 
         taskList.appendChild(listItem);
 
-        storeTaskInLocalStorage(taskInput.value);
+        storeTaskInLocalStorage(taskInput.value, taskId);
 
         taskInput.value = '';
     }
     e.preventDefault();
 }
 
+function storeTaskInLocalStorage(task, taskId) {
+    let tasks = getTasksFromLocalStorage();
+
+    const taskObject = {
+        id: taskId,
+        text: task,
+        completed: false,
+    }
+
+    tasks.push(taskObject);
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+function getLastId() {
+    let tasks = getTasksFromLocalStorage();
+    if (!tasks.length) { return 0 };
+    return Math.max.apply(Math, tasks.map(function (task) { return task.id; }))
+}
+
+// Task changed to object and assigned an ID
+// this way if two tasks have the same text, only the selected task will be deleted.
 function removeTask(e) {
     if (e.target.parentElement.classList.contains('delete-item')) {
         if (confirm('Are you sure?')) {
             e.target.parentElement.parentElement.remove();
 
-            removeTaskFromLocalStorage(e.target.parentElement.parentElement)
+            removeTaskFromLocalStorage(Number(e.target.parentElement.parentElement.id.substring(5,)))
         }
     }
 }
 
-function removeTaskFromLocalStorage(taskToRemove) {
+function removeTaskFromLocalStorage(taskId) {
     const tasks = getTasksFromLocalStorage();
     tasks.forEach(function (task, index) {
-        if (taskToRemove.textContent === task) {
+        if (task.id === taskId) {
             tasks.splice(index, 1);
         }
     })
@@ -88,25 +112,13 @@ function getTasksFromLocalStorage() {
     return (localStorage.getItem('tasks') === null) ? [] : tasks = JSON.parse(localStorage.getItem('tasks'));
 }
 
-function storeTaskInLocalStorage(task) {
-    let tasks;
-    if (localStorage.getItem('tasks') === null) {
-        tasks = [];
-    } else {
-        tasks = JSON.parse(localStorage.getItem('tasks'));
-    }
-
-    tasks.push(task);
-
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-}
-
 function showStoredTasks() {
     const tasks = getTasksFromLocalStorage();
     tasks.forEach(function (task) {
         const listItem = document.createElement('li');
         listItem.className = 'collection-item';
-        listItem.appendChild(document.createTextNode(task));
+        listItem.id = 'task-' + task.id;
+        listItem.appendChild(document.createTextNode(task.text));
 
         const deleteItem = document.createElement('a');
         deleteItem.className = 'delete-item secondary-content';
