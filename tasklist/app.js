@@ -23,12 +23,27 @@ function addTask(e) {
         listItem.className = 'collection-item';
         const taskId = getLastId() + 1;
         listItem.id = 'task-' + taskId;
-        listItem.appendChild(document.createTextNode(taskInput.value));
+
+        const todoLabel = document.createElement('label');
+        todoLabel.className = 'todo-label';
+
+        const completeCheck = document.createElement('input');
+        completeCheck.type = 'checkbox';
+        completeCheck.name = 'complete-task';
+        completeCheck.addEventListener('change', completeTask);
+        todoLabel.appendChild(completeCheck);
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'todo-text';
+        textSpan.appendChild(document.createTextNode(taskInput.value));
+
+        todoLabel.appendChild(textSpan);
+
+        listItem.appendChild(todoLabel);
 
         const deleteBtn = document.createElement('a');
         deleteBtn.className = 'delete-item secondary-content';
         deleteBtn.innerHTML = '<i class="fa fa-remove"></i>';
-
         listItem.appendChild(deleteBtn);
 
         taskList.appendChild(listItem);
@@ -60,6 +75,26 @@ function getLastId() {
     return Math.max.apply(Math, tasks.map(function (task) { return task.id; }))
 }
 
+function completeTask(e) {
+    if (e.target.checked) {
+        console.log('Checked');
+    } else {
+        console.log('unchecked');
+    }
+    updateTodoStatusInLocalStorage(Number(e.target.parentElement.parentElement.id.substring(5)), e.target.checked);
+}
+
+function updateTodoStatusInLocalStorage(taskId, isCompleted) {
+    const tasks = getTasksFromLocalStorage();
+    tasks.forEach(function (task) {
+        if (task.id === taskId) {
+            task.completed = isCompleted;
+        }
+    })
+
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
 // Task changed to object and assigned an ID
 // this way if two tasks have the same text, only the selected task will be deleted.
 function removeTask(e) {
@@ -67,7 +102,7 @@ function removeTask(e) {
         if (confirm('Are you sure?')) {
             e.target.parentElement.parentElement.remove();
 
-            removeTaskFromLocalStorage(Number(e.target.parentElement.parentElement.id.substring(5,)))
+            removeTaskFromLocalStorage(Number(e.target.parentElement.parentElement.id.substring(5)))
         }
     }
 }
@@ -118,13 +153,29 @@ function showStoredTasks() {
         const listItem = document.createElement('li');
         listItem.className = 'collection-item';
         listItem.id = 'task-' + task.id;
-        listItem.appendChild(document.createTextNode(task.text));
 
-        const deleteItem = document.createElement('a');
-        deleteItem.className = 'delete-item secondary-content';
-        deleteItem.innerHTML = '<i class="fa fa-remove"></i>';
+        const todoLabel = document.createElement('label');
+        todoLabel.className = 'todo-label';
 
-        listItem.appendChild(deleteItem);
+        const completeCheck = document.createElement('input');
+        completeCheck.type = 'checkbox';
+        completeCheck.name = 'complete-task';
+        if (task.completed) { completeCheck.checked = true; }
+        completeCheck.addEventListener('change', completeTask);
+        todoLabel.appendChild(completeCheck);
+
+        const textSpan = document.createElement('span');
+        textSpan.className = 'todo-text';
+        textSpan.appendChild(document.createTextNode(task.text));
+
+        todoLabel.appendChild(textSpan);
+
+        listItem.appendChild(todoLabel);
+
+        const deleteBtn = document.createElement('a');
+        deleteBtn.className = 'delete-item secondary-content';
+        deleteBtn.innerHTML = '<i class="fa fa-remove"></i>';
+        listItem.appendChild(deleteBtn);
 
         taskList.appendChild(listItem);
     })
