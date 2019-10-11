@@ -76,11 +76,7 @@ function getLastId() {
 }
 
 function completeTask(e) {
-    if (e.target.checked) {
-        console.log('Checked');
-    } else {
-        console.log('unchecked');
-    }
+    e.target.nextSibling.style.textDecoration = e.target.checked ? 'line-through' : 'none';
     updateTodoStatusInLocalStorage(Number(e.target.parentElement.parentElement.id.substring(5)), e.target.checked);
 }
 
@@ -166,6 +162,7 @@ function showStoredTasks() {
 
         const textSpan = document.createElement('span');
         textSpan.className = 'todo-text';
+        if (task.completed) { textSpan.style.textDecoration = 'line-through'; }
         textSpan.appendChild(document.createTextNode(task.text));
 
         todoLabel.appendChild(textSpan);
