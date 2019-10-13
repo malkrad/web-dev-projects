@@ -13,9 +13,15 @@ function calculateGrade(e) {
         alert('Please enter the maximum possible Grade');
     } else if (minGrade.value === '') {
         alert('Please enter the minimum passing Grade');
+    } else if (maxGrade.value === minGrade.value) {
+        alert('Max Grade and Min Grade can\'t be the same.')
     } else {
-        const result = 1 + 3 * (maxGrade.value - userGrade.value) / (maxGrade.value - minGrade.value);
-        finalGrade.value = result;
+        const result = (1 + 3 * (maxGrade.value - userGrade.value) / (maxGrade.value - minGrade.value)).toFixed(2);
+        if (isFinite(result)) {
+            finalGrade.value = result;
+        } else {
+            alert('Please check your numbers.');
+        }
     }
     e.preventDefault();
 }
