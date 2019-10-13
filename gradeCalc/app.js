@@ -5,7 +5,16 @@ const maxGrade = document.getElementById('max-grade');
 const minGrade = document.getElementById('min-grade');
 const finalGrade = document.getElementById('final-grade');
 
-calcBtn.addEventListener('click', calculateGrade);
+calcBtn.addEventListener('click', function(e) {
+    document.getElementById('result').style.display = 'none';
+
+    document.getElementById('loading').style.display = 'block';
+
+    setTimeout(calculateGrade, 1500);
+
+    e.preventDefault();
+});
+
 minGradeBtn.addEventListener('click', minGradeInfo);
 
 function calculateGrade(e) {
@@ -23,6 +32,9 @@ function calculateGrade(e) {
         const result = (1 + 3 * (Number(maxGrade.value) - Number(userGrade.value)) / (Number(maxGrade.value) - Number(minGrade.value))).toFixed(2);
         if (isFinite(result)) {
             finalGrade.value = result;
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
         } else {
             showError('Please check your numbers.');
         }
@@ -42,6 +54,9 @@ function minGradeInfo(e) {
 }
 
 function showError(e) {
+    document.getElementById('result').style.display = 'none';
+    document.getElementById('loading').style.display = 'none';
+
     const errorDiv = document.createElement('div');
     errorDiv.className = 'alert alert-danger';
     errorDiv.appendChild(document.createTextNode(e));
