@@ -10,21 +10,21 @@ minGradeBtn.addEventListener('click', minGradeInfo);
 
 function calculateGrade(e) {
     if (userGrade.value === '') {
-        alert('Please enter your Grade.');
+        showError('Please enter your Grade.');
     } else if (maxGrade.value === '') {
-        alert('Please enter the maximum possible Grade');
+        showError('Please enter the maximum possible Grade');
     } else if (minGrade.value === '') {
-        alert('Please enter the minimum passing Grade');
+        showError('Please enter the minimum passing Grade');
     } else if (maxGrade.value === minGrade.value) {
-        alert('Max Grade and Min Grade can\'t be the same.')
+        showError('Max Grade and Min Grade can\'t be the same.')
     } else if (Number(userGrade.value) > Number(maxGrade.value)) {
-        alert('Come on, be serious. You can\'t get more than the Maximum Grade :)')
+        showError('Come on, be serious. You can\'t get more than the Maximum Grade :)')
     } else {
         const result = (1 + 3 * (Number(maxGrade.value) - Number(userGrade.value)) / (Number(maxGrade.value) - Number(minGrade.value))).toFixed(2);
         if (isFinite(result)) {
             finalGrade.value = result;
         } else {
-            alert('Please check your numbers.');
+            showError('Please check your numbers.');
         }
     }
     e.preventDefault();
@@ -39,4 +39,20 @@ function minGradeInfo(e) {
         }
     }
     e.preventDefault();
+}
+
+function showError(e) {
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'alert alert-danger';
+    errorDiv.appendChild(document.createTextNode(e));
+
+    const card = document.querySelector('.card');
+    const heading = document.querySelector('.heading');
+    card.insertBefore(errorDiv, heading);
+
+    setTimeout(clearError, 3000);
+}
+
+function clearError() {
+    document.querySelector('.alert').remove();
 }
