@@ -24,8 +24,8 @@ function calculateGrade(e) {
         showError('Please enter the maximum possible Grade');
     } else if (minGrade.value === '') {
         showError('Please enter the minimum passing Grade');
-    } else if (maxGrade.value === minGrade.value) {
-        showError('Max Grade and Min Grade can\'t be the same.')
+    } else if (Number(maxGrade.value) <= Number(minGrade.value)) {
+        showError('Min Grade should be less than Max Grade.')
     } else if (Number(userGrade.value) > Number(maxGrade.value)) {
         showError('Come on, be serious. You can\'t get more than the Maximum Grade :)')
     } else {
