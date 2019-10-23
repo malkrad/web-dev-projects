@@ -3,8 +3,8 @@ class UI {
         this.profile = document.getElementById('profile');
     }
 
+    // Display profile in UI
     showProfile(user) {
-        // console.log(user);
         this.profile.innerHTML = `
             <div class="card card-body mb-3">
                 <div class="row">
@@ -32,6 +32,18 @@ class UI {
         `;
     }
 
+    // Display error message
+    showAlert(message, className) {
+        const div = document.createElement('div');
+        div.className = className;
+        div.appendChild(document.createTextNode(message));
+        const container = document.querySelector('.searchContainer');
+        const search = document.querySelector('.search');
+        container.insertBefore(div, search);
+        this.clearProfile();
+    }
+
+    // Clear profile form UI
     clearProfile() {
         this.profile.innerHTML = '';
     }
