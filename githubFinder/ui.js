@@ -34,6 +34,7 @@ class UI {
 
     // Display error message
     showAlert(message, className) {
+        this.clearAlert();
         const div = document.createElement('div');
         div.className = className;
         div.appendChild(document.createTextNode(message));
@@ -41,6 +42,17 @@ class UI {
         const search = document.querySelector('.search');
         container.insertBefore(div, search);
         this.clearProfile();
+        setTimeout(() => {
+            this.clearAlert();
+        }, 3000);
+    }
+
+    // Clear alert message from showAlert()
+    clearAlert() {
+        const currentAlert = document.querySelector('.alert');
+        if (currentAlert) {
+            currentAlert.remove();
+        }
     }
 
     // Clear profile form UI
